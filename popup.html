@@ -7,11 +7,13 @@
     <script type="text/javascript" src="zillow.js"></script>
   </head>
   <body>
+    <div id="errors" style="display: none">
+    </div>
     <form id="form">
       <input type="text" id="address" name="address" placeholder="Address"/>
       <button type="submit">Submit</button>
     </form>
-    <div>
+    <div id="zestimate" style="display: none">
       $<span id="estimate"></span>
       <p class="range">
         $<span id="estimate_low"></span> - $<span id="estimate_high"></span>

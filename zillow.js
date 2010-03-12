@@ -4,8 +4,7 @@ function isValidZipCode(value) {
 }
 
 (function($) {
-  var geocoder = new google.maps.Geocoder();
-
+  var geocoder = null;
   zillow = {};
   zillow.lookup = function(address) {
     geocoder.geocode({'address': address}, function(results, status) {
@@ -44,6 +43,13 @@ function isValidZipCode(value) {
           'citystatezip': zip
         };
         $.get('http://www.zillow.com/webservice/GetSearchResults.htm', data, function(xml) {
+          if ($(xml).find('message code').text() != '0') {
+            $('#errors').show().text($(xml).find('message text').text());
+            return;
+          }
+          $('#errors').hide();
+          $('#zestimate').show();
+
           var result = $(xml).find('result');
           var zestimate = result.find('zestimate');
 
@@ -60,5 +66,6 @@ function isValidZipCode(value) {
       zillow.lookup($('#address').val());
       return false;
     });
+    geocoder = new google.maps.Geocoder();
   });
 })(jQuery);

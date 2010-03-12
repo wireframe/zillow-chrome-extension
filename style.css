@@ -10,3 +10,8 @@ body {
   height: 250px;
   width: 250px;
 }
+#errors {
+  border: 1px solid red;
+  background-color: #FED6D6;
+  font-weight: bold;
+}
