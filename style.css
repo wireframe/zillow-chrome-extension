@@ -1,10 +1,13 @@
 body {
   font-family: arial, sans-serif;
-  width: 315px;
-  height: 300px;
+  width: 260px;
+  height: 260px;
 }
 #form {
   margin-bottom: 0;
+}
+#form input {
+  width: 180px;
 }
 #map {
   height: 250px;
@@ -12,6 +15,7 @@ body {
 }
 #zestimate {
   margin-top: 3px;
+  margin-bottom: 5px;
 }
 .range {
   font-size: 0.8em;
@@ -24,4 +28,12 @@ body {
   border: 1px solid red;
   background-color: #FED6D6;
   font-weight: bold;
+}
+#home_details, #external_map {
+  font-size: 0.7em;
+  color: #666;
+}
+#external_map {
+  float: right;
+  clear: both;
 }
