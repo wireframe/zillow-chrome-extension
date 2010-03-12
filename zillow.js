@@ -36,6 +36,7 @@ function isValidZipCode(value) {
         chrome.tabs.create({
           url: 'http://maps.google.com?near=' + address
         });
+        window.close();
         return false;
       });
       
@@ -75,6 +76,8 @@ function isValidZipCode(value) {
             chrome.tabs.create({
               url: $(xml).find('links homedetails').text()
             });
+            window.close();
+            return false;
           });
 
           var result = $(xml).find('result');
