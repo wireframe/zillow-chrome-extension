@@ -10,6 +10,16 @@ body {
   height: 250px;
   width: 250px;
 }
+#zestimate {
+  margin-top: 3px;
+}
+.range {
+  font-size: 0.8em;
+  font-weight: bold;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  color: #666;
+}
 #errors {
   border: 1px solid red;
   background-color: #FED6D6;
