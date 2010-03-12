@@ -5,14 +5,19 @@
       if (status == google.maps.GeocoderStatus.OK) {
         var result = results[0]
         var address = result.formatted_address;
-        console.log(results[0]);
-        
-        var options = {
-          zoom: 8,
-          center: result.geometry.location,
+        var location = result.geometry.location;
+
+        var map = new google.maps.Map(document.getElementById("map"), {
+          zoom: 15,
+          center: location,
           mapTypeId: google.maps.MapTypeId.ROADMAP
-        };
-        var map = new google.maps.Map(document.getElementById("map"), options);
+        });
+        var marker = new google.maps.Marker({
+          position: location, 
+          map: map, 
+          title: address
+        });
+        $('#external_map').attr('href', 'http://maps.google.com?near=' + address);
       }
     });
 
