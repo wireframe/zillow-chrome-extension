@@ -54,6 +54,11 @@ function isValidZipCode(value) {
         }
         $('#errors').hide();
         $('#zestimate').show();
+        $('#home_details').click(function() {
+          chrome.tabs.create({
+            url: $(xml).find('links homedetails').text()
+          });
+        });
 
         var result = $(xml).find('result');
         var zestimate = result.find('zestimate');
