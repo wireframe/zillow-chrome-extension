@@ -24,7 +24,12 @@ function isValidZipCode(value) {
           map: map, 
           title: address
         });
-        $('#external_map').attr('href', 'http://maps.google.com?near=' + address);
+        $('#external_map').click(function() {
+          chrome.tabs.create({
+            url: 'http://maps.google.com?near=' + address
+          });
+          return false;
+        });
         
         var street_address = address.split(',')[0];
         var zip = null;

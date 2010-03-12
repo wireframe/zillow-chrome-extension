@@ -7,9 +7,10 @@
     "128": "icon-128.png" 
   },
   "permissions": [
-    "http://www.zillow.com/"
+    "tabs",
+    "http://www.zillow.com/",
+    "http://maps.google.com/"
   ],
-  "background_page": "background.html",
   "browser_action": {
     "default_icon": "icon.png",
     "default_title": "",
