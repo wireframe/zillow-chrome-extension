@@ -104,13 +104,7 @@ function isValidZipCode(value) {
     var valuation = zestimate.find('valuationRange');
     $('<h3 style="font-size: 0.7em; color: #333; margin-top: 2px; margin-bottom: 2px" />').append('$' + valuation.find('low').text() + ' - $' + valuation.find('high').text()).appendTo(content);
 
-    $('<a href="#" style="font-size: 0.7em; float: right; clear: both">view detailed estimate</a>').appendTo(content).click(function() {
-      chrome.tabs.create({
-        url: $(xml).find('links homedetails').text()
-      });
-      window.close();
-      return false;
-    });
+    $('<a target="zillow" style="font-size: 0.7em; float: right; clear: both">view detailed estimate</a>').attr('href', $(xml).find('links homedetails').text()).appendTo(content);
 
     return content;
   };
