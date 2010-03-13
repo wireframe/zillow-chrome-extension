@@ -4,36 +4,23 @@ body {
   height: 300px;
 }
 #form {
-  margin-bottom: 0;
+  margin-bottom: 3px;
 }
 #form input {
-  width: 260px;
+  width: 220px;
 }
 #map {
   height: 300px;
   width: 300px;
-}
-#zestimate {
-  margin-top: 3px;
-  margin-bottom: 5px;
-}
-.range {
-  font-size: 0.8em;
-  font-weight: bold;
-  margin-top: 2px;
-  margin-bottom: 2px;
-  color: #666;
 }
 #errors {
   border: 1px solid red;
   background-color: #FED6D6;
   font-weight: bold;
 }
-#home_details, #external_map {
+#external_map {
   font-size: 0.7em;
   color: #666;
-}
-#external_map {
   float: right;
   clear: both;
 }

@@ -88,23 +88,23 @@ function isValidZipCode(value) {
   zillow.formatEstimate = function(result, xml) {
     console.log(xml);
 
+    var data = zillow.postParams(result);
     var content = $('<div />');
-    $('<h4 />').text(result.formatted_address).appendTo(content);
+    $('<h1 style="font-weight: normal; font-size: 0.8em; margin-bottom: 3px" />').text(data['address']).appendTo(content);
 
     if ($(xml).find('message code').text() != '0') {
       $('<b />').text($(xml).find('message text').text()).appendTo(content);
-      var data = zillow.postParams(result);
       $('<p />').text('street: ' + data['address'] + ' zip: ' + data['citystatezip']).appendTo(content);
       return content;
     }
     var result = $(xml).find('result');
     var zestimate = result.find('zestimate');
 
-    $('<h5 />').text('$' + zestimate.find('amount').text()).appendTo(content);
+    $('<h2 style="font-size: 0.9em; margin-top: 3px; margin-bottom: 3px" />').text('$' + zestimate.find('amount').text()).appendTo(content);
     var valuation = zestimate.find('valuationRange');
-    $('<p />').append('$' + valuation.find('low').text() + ' - $' + valuation.find('high').text()).appendTo(content);
+    $('<h3 style="font-size: 0.7em; color: #333; margin-top: 2px; margin-bottom: 2px" />').append('$' + valuation.find('low').text() + ' - $' + valuation.find('high').text()).appendTo(content);
 
-    $('<a href="#">view detailed estimate</a>').appendTo(content).click(function() {
+    $('<a href="#" style="font-size: 0.7em; float: right; clear: both">view detailed estimate</a>').appendTo(content).click(function() {
       chrome.tabs.create({
         url: $(xml).find('links homedetails').text()
       });
