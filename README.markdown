@@ -7,7 +7,7 @@ Lookup estimate for address.
 
 ## Installation
 
-* install plugin at ???
+* install plugin at https://chrome.google.com/extensions/detail/hpfpmhoefhblnbnipeapenjojpcbifpo/
 
 ## Copyright
 
