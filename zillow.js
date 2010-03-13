@@ -7,9 +7,10 @@ function isValidZipCode(value) {
   var geocoder = null;
   zillow = {};
   zillow.api_key = 'X1-ZWz1csm2cyipsb_6plsv';
+
   zillow.findAddress = function(address, callback) {
     $('#map_area').hide();
-    
+
     if (geocoder == null) { geocoder = new google.maps.Geocoder(); }
     geocoder.geocode({'address': address}, function(results, status) {
       if (status != google.maps.GeocoderStatus.OK) {
@@ -19,82 +20,108 @@ function isValidZipCode(value) {
       $('#map_area').show();
 
       var result = results[0]
-      var address = result.formatted_address;
-      var location = result.geometry.location;
+      console.log(result);
 
-      var map = new google.maps.Map(document.getElementById("map"), {
-        zoom: 15,
-        center: location,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-      });
-      var marker = new google.maps.Marker({
-        position: location, 
-        map: map, 
-        title: address
-      });
-      $('#external_map').click(function() {
-        chrome.tabs.create({
-          url: 'http://maps.google.com?near=' + address
-        });
-        window.close();
-        return false;
-      });
-      
       callback(result);
     });
   };
-  zillow.findEstimate = function(address) {
-    $('#errors').hide();
-    $('#zestimate').hide();
-    
-    zillow.findAddress(address, function(result) {
-      var address = result.formatted_address;
-      var street_address = address.split(',')[0];
-      var zip = null;
-      $.each(result.address_components, function() {
-        if (isValidZipCode(this.short_name) && isValidZipCode(this.long_name)) {
-          zip = this.short_name;
-        }
-      });
-      var data = {
-        'zws-id': zillow.api_key, 
-        'address': street_address,
-        'citystatezip': zip
-      };
-      $.ajax({
-        url: 'http://www.zillow.com/webservice/GetSearchResults.htm',
-        data: data,
-        dataType: 'xml',
-        type: 'GET',
-        success: function(xml) {
-          if ($(xml).find('message code').text() != '0') {
-            $('#errors').show().text($(xml).find('message text').text());
-            return;
-          }
-          $('#zestimate').show();
-          $('#home_details').click(function() {
-            chrome.tabs.create({
-              url: $(xml).find('links homedetails').text()
-            });
-            window.close();
-            return false;
-          });
 
-          var result = $(xml).find('result');
-          var zestimate = result.find('zestimate');
+  zillow.showMap = function(result, tooltip) {
+    var address = result.formatted_address;
+    var location = result.geometry.location;
 
-          $('#estimate').text(zestimate.find('amount').text());
-          var valuation = zestimate.find('valuationRange');
-          $('#estimate_low').text(valuation.find('low').text());
-          $('#estimate_high').text(valuation.find('high').text());
-        }
-      });
+    var map = new google.maps.Map(document.getElementById("map"), {
+      zoom: 15,
+      center: location,
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+      mapTypeControl: false
     });
+    var marker = new google.maps.Marker({
+      position: location, 
+      map: map
+    });
+    var infowindow = new google.maps.InfoWindow({
+      content: tooltip.html()
+    });
+    infowindow.open(map, marker);
+    google.maps.event.addListener(marker, 'click', function() {
+      infowindow.open(map, marker);
+    });
+
+    $('#external_map').click(function() {
+      chrome.tabs.create({
+        url: 'http://maps.google.com?near=' + address
+      });
+      window.close();
+      return false;
+    });
+  };
+
+  /*
+  lookup an estimate for a geocoded result.
+  */
+  zillow.findEstimate = function(result, callback) {
+    $.ajax({
+      url: 'http://www.zillow.com/webservice/GetSearchResults.htm',
+      data: zillow.postParams(result),
+      dataType: 'xml',
+      type: 'GET',
+      success: callback
+    });
+  };
+  zillow.postParams = function(result) {
+    var address = result.formatted_address;
+    var street_address = address.split(',')[0];
+    var zip = null;
+    $.each(result.address_components, function() {
+      if (isValidZipCode(this.short_name) && isValidZipCode(this.long_name)) {
+        zip = this.short_name;
+      }
+    });
+    var data = {
+      'zws-id': zillow.api_key, 
+      'address': street_address,
+      'citystatezip': zip
+    };
+    return data;
+  };
+  zillow.formatEstimate = function(result, xml) {
+    console.log(xml);
+
+    var content = $('<div />');
+    $('<h4 />').text(result.formatted_address).appendTo(content);
+
+    if ($(xml).find('message code').text() != '0') {
+      $('<b />').text($(xml).find('message text').text()).appendTo(content);
+      var data = zillow.postParams(result);
+      $('<p />').text('street: ' + data['address'] + ' zip: ' + data['citystatezip']).appendTo(content);
+      return content;
+    }
+    var result = $(xml).find('result');
+    var zestimate = result.find('zestimate');
+
+    $('<h5 />').text('$' + zestimate.find('amount').text()).appendTo(content);
+    var valuation = zestimate.find('valuationRange');
+    $('<p />').append('$' + valuation.find('low').text() + ' - $' + valuation.find('high').text()).appendTo(content);
+
+    $('<a href="#">view detailed estimate</a>').appendTo(content).click(function() {
+      chrome.tabs.create({
+        url: $(xml).find('links homedetails').text()
+      });
+      window.close();
+      return false;
+    });
+
+    return content;
   };
 
   $(function() {
     $('#form').submit(function() {
-      zillow.findEstimate($('#address').val());
+      zillow.findAddress($('#address').val(), function(result) {
+        zillow.findEstimate(result, function(xml) {
+          zillow.showMap(result, zillow.formatEstimate(result, xml));
+        });
+      });
       return false;
     });
   });

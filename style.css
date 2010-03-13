@@ -1,17 +1,17 @@
 body {
   font-family: arial, sans-serif;
-  width: 260px;
-  height: 260px;
+  width: 300px;
+  height: 300px;
 }
 #form {
   margin-bottom: 0;
 }
 #form input {
-  width: 180px;
+  width: 260px;
 }
 #map {
-  height: 250px;
-  width: 250px;
+  height: 300px;
+  width: 300px;
 }
 #zestimate {
   margin-top: 3px;
