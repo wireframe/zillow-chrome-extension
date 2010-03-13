@@ -1,7 +1,7 @@
 {
   "name": "Zillow",
-  "version": "0.1.0",
-  "description": "",
+  "version": "0.3.0",
+  "description": "Lookup Zillow real estate estimate for any address",
   "icons": { 
     "48": "icon-48.png",
     "128": "icon-128.png" 
