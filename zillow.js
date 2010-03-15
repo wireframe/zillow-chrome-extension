@@ -1,8 +1,3 @@
-function isValidZipCode(value) {
-  var re = /^\d{5}([\-]\d{4})?$/;
-  return (re.test(value));
-}
-
 (function($) {
   var geocoder = null;
   zillow = {};
@@ -72,12 +67,7 @@ function isValidZipCode(value) {
   zillow.postParams = function(result) {
     var address = result.formatted_address;
     var street_address = address.split(',')[0];
-    var zip = null;
-    $.each(result.address_components, function() {
-      if (isValidZipCode(this.short_name) && isValidZipCode(this.long_name)) {
-        zip = this.short_name;
-      }
-    });
+    var zip = address.match(/(\d{5}),/)[1];
     var data = {
       'zws-id': zillow.api_key, 
       'address': street_address,
