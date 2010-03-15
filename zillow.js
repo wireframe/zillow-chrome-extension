@@ -8,6 +8,7 @@
 
     if (geocoder == null) { geocoder = new google.maps.Geocoder(); }
     geocoder.geocode({'address': address}, function(results, status) {
+      console.log(results);
       if (status != google.maps.GeocoderStatus.OK) {
         $('#errors').show().text('Unable to locate address');
         return;
