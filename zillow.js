@@ -5,6 +5,7 @@
 
   zillow.findAddress = function(address, callback) {
     $('#map_area').hide();
+    $('#errors').hide();
 
     if (geocoder == null) { geocoder = new google.maps.Geocoder(); }
     geocoder.geocode({'address': address}, function(results, status) {
