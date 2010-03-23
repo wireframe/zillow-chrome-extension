@@ -1,4 +1,18 @@
 (function($) {
+  /*
+  see http://stackoverflow.com/questions/149055/how-can-i-format-numbers-as-money-in-javascript
+  */
+  Number.prototype.formatMoney = function(c, d, t){
+    var n = this;
+    c = isNaN(c = Math.abs(c)) ? 2 : c;
+    d = d == undefined ? "," : d;
+    t = t == undefined ? "." : t;
+    s = n < 0 ? "-" : "";
+    i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "";
+    j = (j = i.length) > 3 ? j % 3 : 0;
+    return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+  };
+
   var geocoder = null;
   zillow = {};
   zillow.api_key = 'X1-ZWz1csm2cyipsb_6plsv';
@@ -77,6 +91,14 @@
     };
     return data;
   };
+  /*
+  see http://stackoverflow.com/questions/149055/how-can-i-format-numbers-as-money-in-javascript
+  */
+  zillow.formatMoney = function(string) {
+    var currency = "$";
+    var separator = ',';
+    return currency + new Number(string).formatMoney(0, '.', separator);
+  },
   zillow.formatEstimate = function(result, xml) {
     console.log(xml);
 
@@ -92,9 +114,9 @@
     var result = $(xml).find('result');
     var zestimate = result.find('zestimate');
 
-    $('<h2 style="font-size: 0.9em; margin-top: 3px; margin-bottom: 3px" />').text('$' + zestimate.find('amount').text()).appendTo(content);
+    $('<h2 style="font-size: 0.9em; margin-top: 3px; margin-bottom: 3px" />').text(zillow.formatMoney(zestimate.find('amount').text())).appendTo(content);
     var valuation = zestimate.find('valuationRange');
-    $('<h3 style="font-size: 0.7em; color: #333; margin-top: 2px; margin-bottom: 2px" />').append('$' + valuation.find('low').text() + ' - $' + valuation.find('high').text()).appendTo(content);
+    $('<h3 style="font-size: 0.7em; color: #333; margin-top: 2px; margin-bottom: 2px" />').append(zillow.formatMoney(valuation.find('low').text()) + ' - ' + zillow.formatMoney(valuation.find('high').text())).appendTo(content);
 
     $('<a target="zillow" style="font-size: 0.7em; float: right; clear: both">view detailed estimate</a>').attr('href', $(xml).find('links homedetails').text()).appendTo(content);
 
